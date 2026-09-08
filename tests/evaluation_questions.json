@@ -1,0 +1,114 @@
+[
+  {
+    "question": "How many casual leaves are available?",
+    "expected_answer": "12 casual leaves",
+    "expected_keywords": ["12", "casual"],
+    "expected_documents": ["leave_policy.pdf", "hr_faq.pdf", "employee_handbook.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How many sick leaves are available?",
+    "expected_answer": "15 sick leaves",
+    "expected_keywords": ["15", "sick"],
+    "expected_documents": ["leave_policy.pdf", "hr_faq.pdf", "employee_handbook.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How many earned leaves do employees get?",
+    "expected_answer": "18 earned leaves, accrued at 1.5 days per month",
+    "expected_keywords": ["18", "earned"],
+    "expected_documents": ["leave_policy.pdf", "employee_handbook.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How many days can I work from home each week?",
+    "expected_answer": "2 days per week",
+    "expected_keywords": ["2", "week"],
+    "expected_documents": ["work_from_home_policy.pdf", "hr_faq.pdf", "employee_handbook.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How many earned leaves can be carried forward?",
+    "expected_answer": "A maximum of 10 earned leaves",
+    "expected_keywords": ["10", "carried forward"],
+    "expected_documents": ["leave_policy.pdf", "hr_faq.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How many public holidays does the company observe?",
+    "expected_answer": "12 paid public holidays per year",
+    "expected_keywords": ["12", "holiday"],
+    "expected_documents": ["holiday_policy.pdf", "employee_handbook.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "What is the medical insurance sum insured?",
+    "expected_answer": "INR 5,00,000 per family per year",
+    "expected_keywords": ["5,00,000", "insur"],
+    "expected_documents": ["benefits_policy.pdf", "hr_faq.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "What is the notice period after confirmation?",
+    "expected_answer": "60 days after confirmation, 30 days during probation",
+    "expected_keywords": ["notice period", "60"],
+    "expected_documents": ["employee_handbook.pdf", "hr_faq.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "What is the referral bonus for engineering roles?",
+    "expected_answer": "INR 50,000 for engineering levels 3 and above",
+    "expected_keywords": ["50,000", "referral"],
+    "expected_documents": ["recruitment_policy.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "What are the core working hours?",
+    "expected_answer": "10:00 AM to 5:00 PM",
+    "expected_keywords": ["10:00", "5:00"],
+    "expected_documents": ["attendance_policy.pdf", "hr_faq.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How long is the probation period?",
+    "expected_answer": "6 months from the date of joining",
+    "expected_keywords": ["6 months", "probation"],
+    "expected_documents": ["employee_handbook.pdf", "joining_process.pdf", "hr_faq.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How much is the annual learning allowance?",
+    "expected_answer": "INR 25,000 per employee per year",
+    "expected_keywords": ["25,000", "learning"],
+    "expected_documents": ["benefits_policy.pdf", "hr_faq.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "How many days of paternity leave are available?",
+    "expected_answer": "10 working days of paid paternity leave",
+    "expected_keywords": ["10", "paternity"],
+    "expected_documents": ["leave_policy.pdf"],
+    "answerable": true
+  },
+  {
+    "question": "What is the company's international travel allowance?",
+    "expected_answer": "Not covered by the HR documents",
+    "expected_keywords": [],
+    "expected_documents": [],
+    "answerable": false
+  },
+  {
+    "question": "How many stock options do new engineers receive?",
+    "expected_answer": "Not covered by the HR documents",
+    "expected_keywords": [],
+    "expected_documents": [],
+    "answerable": false
+  },
+  {
+    "question": "What is the reimbursement limit for a company yacht?",
+    "expected_answer": "Not covered by the HR documents",
+    "expected_keywords": [],
+    "expected_documents": [],
+    "answerable": false
+  }
+]

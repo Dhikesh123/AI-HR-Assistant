@@ -1,0 +1,25 @@
+# Secrets
+.env
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+
+# Application data
+hr_assistant.db
+*.db-journal
+chroma_db/
+uploads/
+logs/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
