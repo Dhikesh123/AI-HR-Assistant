@@ -6,38 +6,43 @@
 #
 # Deploy: https://dashboard.render.com/blueprints -> New Blueprint Instance,
 # pick this repo. Render prompts for every `sync: false` var below.
+#
+# Free-tier notes: free instances get no persistent disk and sleep after 15
+# minutes of inactivity. Everything below therefore writes to /tmp, which is
+# wiped on every restart -- the demo accounts are re-seeded on boot, but
+# uploaded documents and the Chroma index do not survive a sleep cycle.
 
 services:
   # ---------------------------------------------------------------- backend
   - type: web
     name: hr-assistant-api
     runtime: python
-    plan: starter          # a disk requires a paid instance; free has no disk
+    plan: free
     region: oregon
     buildCommand: pip install -r requirements.txt
     # init_db is idempotent: it creates tables and seeds the demo accounts.
+    # On free instances it also rebuilds the schema after every cold start.
     startCommand: python -m backend.database.init_db && uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     autoDeployTrigger: commit
 
-    # SQLite, the Chroma index and uploaded documents all live on one disk.
-    # Without it every deploy would start from an empty knowledge base.
-    disk:
-      name: hr-data
-      mountPath: /var/data
-      sizeGB: 1
-
     envVars:
+      # Ephemeral storage: free instances have no disk, so /tmp is the only
+      # writable location that survives the life of a single container.
       - key: DATABASE_URL
-        value: sqlite:////var/data/hr_assistant.db
+        value: sqlite:////tmp/hr_assistant.db
       - key: CHROMA_DIR
-        value: /var/data/chroma_db
+        value: /tmp/chroma_db
       - key: UPLOAD_DIR
-        value: /var/data/uploads
+        value: /tmp/uploads
       - key: ENVIRONMENT
         value: production
       - key: LOG_LEVEL
         value: INFO
+      # OpenAI embeddings keep the 512 MB free instance from loading a local
+      # transformer model into memory.
+      - key: EMBEDDING_PROVIDER
+        value: openai
       # Rotating this invalidates every issued token, which is the point.
       - key: JWT_SECRET_KEY
         generateValue: true
@@ -54,15 +59,16 @@ services:
   - type: web
     name: hr-assistant-ui
     runtime: python
-    plan: starter
+    plan: free
     region: oregon
     buildCommand: pip install -r requirements.txt
     startCommand: streamlit run frontend/app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true
     autoDeployTrigger: commit
 
     envVars:
-      # Render assigns the backend URL at creation time, so it cannot be wired
-      # here: after the first deploy, paste https://hr-assistant-api.onrender.com
-      # (the API service's real URL) into this var in the Dashboard.
+      # The backend's public URL, not its internal host: a sleeping free
+      # instance only wakes on public traffic. Render assigns the real URL at
+      # creation time, so paste it here after the first deploy -- it will be
+      # https://hr-assistant-api.onrender.com unless the name was taken.
       - key: API_BASE_URL
         sync: false
