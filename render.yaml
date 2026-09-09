@@ -1,0 +1,68 @@
+# Render Blueprint for the AI HR Assistant.
+#
+# Two services from one repo: the FastAPI backend and the Streamlit UI that
+# talks to it over REST. Keeping them separate is what keeps the OpenAI key and
+# the JWT secret on the server, out of the browser.
+#
+# Deploy: https://dashboard.render.com/blueprints -> New Blueprint Instance,
+# pick this repo. Render prompts for every `sync: false` var below.
+
+services:
+  # ---------------------------------------------------------------- backend
+  - type: web
+    name: hr-assistant-api
+    runtime: python
+    plan: starter          # a disk requires a paid instance; free has no disk
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    # init_db is idempotent: it creates tables and seeds the demo accounts.
+    startCommand: python -m backend.database.init_db && uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+
+    # SQLite, the Chroma index and uploaded documents all live on one disk.
+    # Without it every deploy would start from an empty knowledge base.
+    disk:
+      name: hr-data
+      mountPath: /var/data
+      sizeGB: 1
+
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////var/data/hr_assistant.db
+      - key: CHROMA_DIR
+        value: /var/data/chroma_db
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      # Rotating this invalidates every issued token, which is the point.
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
+      # Seed credentials: change these from the demo values before going live.
+      # Self-registration can only create employees, so this is the admin.
+      - key: SEED_ADMIN_EMAIL
+        sync: false
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+
+  # --------------------------------------------------------------- frontend
+  - type: web
+    name: hr-assistant-ui
+    runtime: python
+    plan: starter
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run frontend/app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true
+    autoDeployTrigger: commit
+
+    envVars:
+      # Render assigns the backend URL at creation time, so it cannot be wired
+      # here: after the first deploy, paste https://hr-assistant-api.onrender.com
+      # (the API service's real URL) into this var in the Dashboard.
+      - key: API_BASE_URL
+        sync: false
