@@ -79,8 +79,7 @@ Creates an account and returns a token. Role defaults to `employee`.
 {
   "name": "Priya Sharma",
   "email": "priya@acme.com",
-  "password": "Str0ngPass!",
-  "role": "employee"
+  "password": "Str0ngPass!"
 }
 ```
 
@@ -89,7 +88,9 @@ Creates an account and returns a token. Role defaults to `employee`.
 | `name` | 2–120 characters |
 | `email` | valid email, unique |
 | `password` | 8–128 characters |
-| `role` | `employee` (default) or `admin` |
+
+Unknown fields are rejected with `422`. There is no `role` field: signup always
+creates an employee.
 
 **Response `201`**
 ```json
@@ -108,8 +109,10 @@ Creates an account and returns a token. Role defaults to `employee`.
 
 **Errors** — `409` email already registered · `422` validation failed
 
-> In a real deployment, self-registration with `role: "admin"` should be removed
-> or gated. It is left open here so the demo can create either role.
+> Self-registration cannot create an administrator — posting `"role": "admin"`
+> returns `422`. Admin accounts come from the database seeder or from
+> `python scripts/create_admin.py`, which runs against the server's own
+> database and so is reachable only by whoever operates the deployment.
 
 ---
 

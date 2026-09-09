@@ -64,6 +64,35 @@ def test_register_and_duplicate_email(client: TestClient) -> None:
     assert duplicate.status_code == 409
 
 
+def test_register_cannot_grant_admin_role(client: TestClient) -> None:
+    """A crafted body must never mint an administrator.
+
+    /api/auth/register is public, so honouring a client-supplied role would let
+    anyone with the URL take over document management.
+    """
+    response = client.post(
+        "/api/auth/register",
+        json={
+            "name": "Sneaky User",
+            "email": "sneaky@acme.com",
+            "password": "Sneaky@123",
+            "role": "admin",
+        },
+    )
+    # The extra field is rejected outright; either way no admin is created.
+    assert response.status_code in (201, 422)
+    if response.status_code == 201:
+        assert response.json()["user"]["role"] == "employee"
+
+    login = client.post(
+        "/api/auth/login", json={"email": "sneaky@acme.com", "password": "Sneaky@123"}
+    )
+    if login.status_code == 200:
+        headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+        assert client.get("/api/auth/me", headers=headers).json()["role"] == "employee"
+        assert client.get("/api/documents", headers=headers).status_code == 403
+
+
 def test_register_rejects_short_password(client: TestClient) -> None:
     response = client.post(
         "/api/auth/register",

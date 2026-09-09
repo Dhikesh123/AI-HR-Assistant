@@ -76,11 +76,14 @@ class ApiClient:
     def login(self, email: str, password: str) -> Dict[str, Any]:
         return self._request("POST", "/api/auth/login", json={"email": email, "password": password})
 
-    def register(self, name: str, email: str, password: str, role: str = "employee") -> Dict[str, Any]:
+    def register(self, name: str, email: str, password: str) -> Dict[str, Any]:
+        # No role: signup always creates an employee. Admins come from the
+        # seeder or scripts/create_admin.py, and the endpoint rejects a role
+        # field outright.
         return self._request(
             "POST",
             "/api/auth/register",
-            json={"name": name, "email": email, "password": password, "role": role},
+            json={"name": name, "email": email, "password": password},
         )
 
     def me(self) -> Dict[str, Any]:

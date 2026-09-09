@@ -9,10 +9,19 @@ from backend.models.user import UserRole
 
 
 class RegisterRequest(BaseModel):
+    """Self-service signup.
+
+    There is deliberately no ``role`` field: self-registration always creates an
+    employee. Admin accounts are created by the seeder or
+    ``scripts/create_admin.py``, so nobody can grant themselves admin rights by
+    posting a crafted body to a public endpoint.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
     name: str = Field(min_length=2, max_length=120)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
-    role: UserRole = UserRole.employee
 
 
 class LoginRequest(BaseModel):
