@@ -1,0 +1,24 @@
+# Backend-only dependencies for the Vercel serverless function.
+# Excludes streamlit/pandas (frontend) and pytest/httpx (tests) to keep the
+# bundle small.
+
+fastapi>=0.115,<1.0
+python-multipart>=0.0.9
+
+SQLAlchemy>=2.0,<3.0
+pydantic>=2.8,<3.0
+pydantic-settings>=2.4
+email-validator>=2.2
+
+python-jose[cryptography]>=3.3
+passlib[bcrypt]>=1.7.4
+
+chromadb>=0.5
+langchain-text-splitters>=0.3
+pypdf>=5.0
+python-docx>=1.1
+numpy>=1.26
+
+python-dotenv>=1.0
+requests>=2.32
+reportlab>=4.2
