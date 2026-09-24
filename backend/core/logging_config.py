@@ -8,7 +8,7 @@ import logging
 import sys
 from pathlib import Path
 
-from backend.core.config import BASE_DIR, settings
+from backend.core.config import settings
 
 _CONFIGURED = False
 SENSITIVE_KEYS = {"password", "password_hash", "token", "api_key", "authorization"}
@@ -19,7 +19,7 @@ def configure_logging() -> None:
     if _CONFIGURED:
         return
 
-    log_dir = Path(BASE_DIR) / "logs"
+    log_dir = Path(settings.LOG_DIR)
     log_dir.mkdir(parents=True, exist_ok=True)
 
     fmt = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"

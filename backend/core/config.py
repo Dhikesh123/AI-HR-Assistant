@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     COMPANY_NAME: str = "Acme Corp"
     ENVIRONMENT: str = "development"
     LOG_LEVEL: str = "INFO"
+    LOG_DIR: str = str(BASE_DIR / "logs")
 
     # --- LLM -----------------------------------------------------------
     OPENAI_API_KEY: str = ""
